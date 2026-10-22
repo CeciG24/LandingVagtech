@@ -1,0 +1,5 @@
+---
+const { text } = Astro.props;
+const lines = text.split('\n');
+---
+{lines.map((line, index) => <>{index > 0 && <br />}<span class:list={{ 'title-accent': index > 0 && index === lines.length - 1 }}>{line}</span></>)}

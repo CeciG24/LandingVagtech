@@ -1,0 +1,21 @@
+---
+import Media from './Media.astro';
+import WhatsApp from './WhatsApp.astro';
+const { site } = Astro.props;
+---
+<section id="inicio" class="hero container">
+  <div class="hero-top"><p class="eyebrow">{site.hero.eyebrow}</p><span class="micro">{site.provisional ? 'DIRECCIÓN VISUAL PROVISIONAL' : 'VAGTECH'}</span></div>
+  <div class="hero-composition">
+    <Media image={site.hero.image} variant="hero-media" caption="Vehículo personalizado · imagen aprobada pendiente" />
+    <div class="hero-copy">
+      <h1>{site.hero.lines.map((line, i) => <span class:list={{ 'hero-lime': i === 1 }}>{line}</span>)}</h1>
+      <div class="hero-support">
+        {site.provisional && <p class="placeholder-note">Texto provisional · pendiente de aprobación</p>}
+        <p>{site.hero.description}</p>
+        <div class="actions"><a class="button button-primary" href="#servicios">Conocer servicios <span aria-hidden="true">↓</span></a><a class="button button-secondary" href="#cotizacion">Cotizar proyecto <span aria-hidden="true">↗</span></a><WhatsApp site={site} /></div>
+      </div>
+    </div>
+    <span class="hero-side" aria-hidden="true">PERSONALIZACIÓN AUTOMOTRIZ</span>
+  </div>
+  <div class="hero-bottom"><span>Personalización automotriz</span><a href="#servicios">Explora los servicios <span aria-hidden="true">↓</span></a></div>
+</section>

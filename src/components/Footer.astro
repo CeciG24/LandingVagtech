@@ -1,0 +1,14 @@
+---
+import Brand from './Brand.astro';
+import Title from './Title.astro';
+import WhatsApp from './WhatsApp.astro';
+import { safeUrl } from '../lib.mjs';
+const { site } = Astro.props;
+const privacy = safeUrl(site.privacyUrl);
+---
+<footer id="contacto" class="footer container">
+  <div class="footer-top"><h2><Title text={site.copy.footerTitle} /></h2><div class="actions"><a class="button button-primary" href="#cotizacion">Cotizar proyecto <span aria-hidden="true">↗</span></a><WhatsApp site={site} /></div></div>
+  <div class="footer-contact"><p>{site.slogan}</p>{site.phone && <a class="text-link" href={`tel:${site.phone.international}`}>Llámanos: {site.phone.display}</a>}</div>
+  <div class="footer-links"><a href="#inicio" class="brand" aria-label="VAGTech — Inicio"><Brand site={site} /></a><a href="#sucursales">Sucursales <span aria-hidden="true">↗</span></a>{site.socialLinks.filter(link => safeUrl(link.url)).map(link => <a href={link.url} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>)}{!site.socialLinks.length && <span class="placeholder-note">Redes y contacto por confirmar</span>}</div>
+  <div class="footer-bottom"><span>© {new Date().getFullYear()} {site.name}</span>{privacy ? <a href={privacy}>Aviso de privacidad</a> : <span>Aviso de privacidad pendiente</span>}<a href="#inicio">Volver al inicio ↑</a></div>
+</footer>

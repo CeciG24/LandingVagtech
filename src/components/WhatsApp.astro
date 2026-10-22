@@ -1,0 +1,6 @@
+---
+import ExternalCta from './ExternalCta.astro';
+import { whatsappUrl } from '../lib.mjs';
+const { site, number = site.whatsapp } = Astro.props;
+---
+<ExternalCta text="WhatsApp" url={whatsappUrl(number)} />

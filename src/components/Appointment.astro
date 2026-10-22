@@ -1,0 +1,6 @@
+---
+import ExternalCta from './ExternalCta.astro';
+import { safeUrl, whatsappUrl } from '../lib.mjs';
+const { site, number = site.whatsapp } = Astro.props;
+---
+<ExternalCta text={site.appointmentUrl ? 'Solicitar cita' : 'Consultar cita por WhatsApp'} url={safeUrl(site.appointmentUrl) || whatsappUrl(number, 'Hola VAGTech, quisiera información para agendar una cita.')} />

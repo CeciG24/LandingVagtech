@@ -1,0 +1,6 @@
+---
+import { Image } from 'astro:assets';
+const { site } = Astro.props;
+---
+{site.logo && <Image src={site.logo.src} alt="" class="brand-emblem" width={48} height={48} widths={[48, 96]} sizes="(max-width: 700px) 34px, 48px" format="webp" quality={85} loading="eager" />}
+<span class="wordmark">VAG<span>TECH</span></span>

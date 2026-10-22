@@ -1,0 +1,41 @@
+---
+import { safeUrl } from '../lib.mjs';
+import { getImage } from 'astro:assets';
+import '@fontsource/saira/latin-400.css';
+import '@fontsource/saira/latin-600.css';
+import '@fontsource/saira/latin-700.css';
+import '@fontsource/saira-semi-condensed/latin-800.css';
+import '@fontsource/saira-semi-condensed/latin-900.css';
+import displayFont from '@fontsource/saira-semi-condensed/files/saira-semi-condensed-latin-900-normal.woff2?url';
+import bodyFont from '@fontsource/saira/files/saira-latin-400-normal.woff2?url';
+import '../styles/tokens.css';
+import '../styles/main.css';
+import '../styles/proposal.css';
+const { site, seo, services } = Astro.props;
+const canonical = safeUrl(seo.canonicalUrl);
+const favicon = site.logo ? await getImage({ src: site.logo.src, width: 64, height: 64, format: 'png' }) : null;
+const texture = site.texture ? await getImage({ src: site.texture, width: 640, format: 'webp', quality: 70 }) : null;
+const json = value => JSON.stringify(value).replaceAll('<', '\\u003c');
+const clientData = json({ whatsapp: site.whatsapp, services: services.map(({ id, name }) => ({ id, name })) });
+---
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{seo.title}</title><meta name="description" content={seo.description} />
+    <meta name="robots" content={seo.indexable && canonical ? 'index,follow' : 'noindex,nofollow'} /><meta name="theme-color" content="#080A08" />
+    <meta property="og:type" content="website" /><meta property="og:locale" content="es_MX" /><meta property="og:title" content={seo.title} /><meta property="og:description" content={seo.description} /><meta property="og:site_name" content={site.name} />
+    {canonical && <><link rel="canonical" href={canonical} /><meta property="og:url" content={canonical} /></>}
+    {safeUrl(seo.image) && <meta property="og:image" content={seo.image} />}
+    {seo.structuredData && <script is:inline type="application/ld+json" set:html={json(seo.structuredData)} />}
+    {favicon && <link rel="icon" href={favicon.src} type="image/png" />}
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
+    <script is:inline id="site-config" type="application/json" set:html={clientData} />
+    <script>import '../client.mjs';</script>
+  </head>
+  <body style={texture ? `--brand-texture: url('${texture.src}')` : undefined}>
+    {site.provisional && <div class="preview-notice">VISTA PROVISIONAL <span>Contenido, imágenes y datos de contacto pendientes de aprobación.</span></div>}
+    <slot />
+  </body>
+</html>

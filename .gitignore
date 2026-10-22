@@ -1,0 +1,8 @@
+dist/
+node_modules/
+.astro/
+tmp/
+respuesta-formulario.zip
+.env
+desktop.ini
+Thumbs.db

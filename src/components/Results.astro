@@ -1,0 +1,17 @@
+---
+import Title from './Title.astro';
+import SectionLabel from './SectionLabel.astro';
+import Media from './Media.astro';
+const { site, results } = Astro.props;
+---
+<section id="resultados" class="section results-section textured-section"><div class="container">
+  <SectionLabel number="02" text="Resultados" />
+  <div class="section-heading"><h2><Title text={site.copy.resultsTitle} /></h2><p>{site.copy.resultsIntro}</p></div>
+  {results.length ? results.map(result => (
+    <article class:list={['result', { 'result-comparison': result.beforeImage && result.afterImage, 'comparison-portrait': result.orientation === 'portrait' }]}>
+      <h3>{result.title ?? 'Resultado VAGTech'}</h3>
+      {result.beforeImage && result.afterImage ? <div class="comparison"><div><span class="comparison-label">Antes</span><Media image={result.beforeImage} variant="comparison-media" /></div><div><span class="comparison-label">Después</span><Media image={result.afterImage} variant="comparison-media" /></div></div> : <Media image={result.image} />}
+      {result.description && <p>{result.description}</p>}
+    </article>
+  )) : <><div class="comparison placeholder-comparison"><div><span class="comparison-label">Antes</span><Media variant="result-media" caption="Fotografía original pendiente" /></div><div><span class="comparison-label">Después</span><Media variant="result-media" caption="Fotografía del resultado pendiente" /></div></div><div class="result-caption"><span class="micro">ESPACIO DE COMPARACIÓN</span><p>Material real pendiente. Estas áreas no representan trabajos realizados.</p></div></>}
+</div></section>

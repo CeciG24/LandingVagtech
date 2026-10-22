@@ -1,0 +1,8 @@
+---
+const { text, url, primary = false } = Astro.props;
+---
+{url ? (
+  <a class:list={['button', primary ? 'button-primary' : 'button-secondary']} href={url} target="_blank" rel="noopener noreferrer">{text}<span aria-hidden="true">↗</span></a>
+) : (
+  <span class="button button-unavailable" aria-disabled="true">{text}<span class="pending">Pendiente</span></span>
+)}

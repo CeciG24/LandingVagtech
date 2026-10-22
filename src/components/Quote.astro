@@ -1,0 +1,31 @@
+---
+import Title from './Title.astro';
+import SectionLabel from './SectionLabel.astro';
+import Appointment from './Appointment.astro';
+import { whatsappUrl, safeUrl } from '../lib.mjs';
+const { site, services } = Astro.props;
+const ready = Boolean(whatsappUrl(site.whatsapp));
+const privacy = safeUrl(site.privacyUrl);
+---
+<section id="cotizacion" class="section quote-section textured-section"><div class="container quote-layout">
+  <div class="quote-intro">
+    <SectionLabel number="03" text="Cotización" /><h2><Title text={site.copy.quoteTitle} /></h2><p>{site.copy.quoteIntro}</p>
+    <div class="quote-line" aria-hidden="true"></div>
+    <p class="form-explanation">{ready ? 'Prepara tu solicitud y revísala antes de continuar a WhatsApp. El envío se completa en esa aplicación.' : 'Modo provisional: puedes preparar tu solicitud. No se enviará hasta confirmar el WhatsApp de VAGTech.'}</p>
+    <div class="actions"><Appointment site={site} /></div>
+    {!site.appointmentUrl && <p class="placeholder-note">Consulta disponibilidad por WhatsApp. La cita se confirma con VAGTech.</p>}
+  </div>
+  <form id="quote-form" class="quote-form">
+    <div class="form-grid">
+      <div class="field"><label for="name">Nombre <span aria-hidden="true">*</span></label><input id="name" name="name" autocomplete="name" maxlength="100" required placeholder="Tu nombre" /></div>
+      <div class="field"><label for="phone">Teléfono / WhatsApp <span aria-hidden="true">*</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="8" maxlength="25" pattern="[+0-9\(\) .\-]{8,25}" required placeholder="Tu número de contacto" /></div>
+      <div class="field"><label for="vehicle">Vehículo <span class="optional">Opcional</span></label><input id="vehicle" name="vehicle" maxlength="120" placeholder="Marca y modelo" /></div>
+      <div class="field"><label for="service">Servicio de interés <span aria-hidden="true">*</span></label><select id="service" name="service" required><option value="">Selecciona un servicio</option>{services.map(service => <option value={service.id}>{service.name}{service.pendingConfirmation ? ' (por confirmar)' : ''}</option>)}</select></div>
+      <div class="field field-wide"><label for="description">¿Qué tienes en mente? <span class="optional">Opcional</span></label><textarea id="description" name="description" maxlength="1500" rows="4" placeholder="Cuéntanos sobre tu proyecto"></textarea></div>
+    </div>
+    <p class="privacy-note">* Campos obligatorios. Los datos se usan para preparar este mensaje; no se guardan en el sitio. {privacy ? <><a href={privacy}>Aviso de privacidad</a>.</> : 'Aviso de privacidad pendiente de VAGTech.'}</p>
+    <button type="submit" class="button button-primary" id="prepare-quote" disabled>Preparar solicitud <span aria-hidden="true">↗</span></button>
+    <noscript><p>Activa JavaScript para preparar el mensaje de cotización.</p></noscript>
+    <div id="quote-preview" class="quote-preview" hidden><p class="micro">REVISA TU SOLICITUD</p><pre id="quote-message"></pre><p id="quote-status" role="status" aria-live="polite"></p><a id="quote-send" class="button button-primary" target="_blank" rel="noopener noreferrer" hidden>Continuar a WhatsApp <span aria-hidden="true">↗</span></a></div>
+  </form>
+</div></section>
