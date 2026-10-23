@@ -22,7 +22,7 @@ test('static output has one HTML page and no server runtime or hydration', async
   assert.ok(!html.includes('astro-island'));
   const scripts = files.filter(file => file.endsWith('.js'));
   const inline = [...html.matchAll(/<script type="module">([\s\S]*?)<\/script>/g)];
-  assert.equal(scripts.length + inline.length, 1, 'Only the existing menu/form/motion script is bundled or inlined');
+  assert.equal(scripts.length + inline.length, 1, 'Menu, form, comparison and motion share one small script');
   const size = inline.length ? Buffer.byteLength(inline[0][1]) : (await stat(new URL(`../dist/${scripts[0]}`, import.meta.url))).size;
   assert.ok(size < 8000, `Client bundle must remain small (${size} bytes)`);
 });
@@ -68,12 +68,37 @@ test('quote is encoded safely and omits absent optional data', () => {
   assert.equal(safeUrl('javascript:alert(1)'), null);
   assert.equal(escapeHtml('<script>'), '&lt;script&gt;');
 });
+
+test('all four real comparisons are prerendered with accessible controls and matching selectors', () => {
+  const ids = ['porsche-911', 'jeep', 'mazda-mx5', 'mazda3'];
+  assert.equal((html.match(/class="comparison-range"/g) || []).length, 4);
+  for (const id of ids) {
+    assert.ok(html.includes(`id="resultado-${id}"`));
+    assert.ok(html.includes(`aria-controls="resultado-${id}"`));
+    assert.ok(html.includes(`data-result-target="resultado-${id}"`));
+  }
+  assert.equal((html.match(/aria-valuetext="50% antes, 50% después"/g) || []).length, 4);
+  assert.ok(html.includes('Las fotografías muestran el vehículo desde ángulos distintos.'));
+});
 test('brand logo is optimized and fonts are local assets', async () => {
   assert.ok(/class="brand-emblem"/.test(html));
   assert.ok(/srcset="[^"]+\.webp/.test(html));
   assert.ok(!html.includes('src="/assets/logo.png"'));
   assert.ok(!html.includes('fonts.googleapis.com'));
   const files = await readdir(new URL('../dist/_astro/', import.meta.url));
-  assert.ok(files.some(file => file.startsWith('saira-semi-condensed-latin-900') && file.endsWith('.woff2')));
+  assert.ok(files.some(file => file.startsWith('russo-one-latin-400') && file.endsWith('.woff2')));
   assert.ok(files.some(file => file.startsWith('saira-latin-400') && file.endsWith('.woff2')));
+});
+
+test('certification carousel prerenders supplied logos and accessible navigation', () => {
+  const carousel = html.match(/<section class="certifications-carousel"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(carousel);
+  for (const brand of ['XPEL', 'Carpro', 'Axalta', 'Focal', 'HELIX', 'herz', 'RIGID', 'ILLUME', '3M']) {
+    assert.ok(carousel.includes(`alt="${brand}"`), brand);
+  }
+  assert.equal((carousel.match(/<li class="certification-logo/g) || []).length, 9);
+  assert.ok(carousel.includes('id="certifications-track"'));
+  assert.ok(carousel.includes('aria-label="Ver logos anteriores"'));
+  assert.ok(carousel.includes('aria-label="Ver más logos"'));
+  assert.ok(!carousel.includes('alt="KC"'));
 });

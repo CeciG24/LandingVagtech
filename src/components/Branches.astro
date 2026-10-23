@@ -3,11 +3,31 @@ import Title from './Title.astro';
 import SectionLabel from './SectionLabel.astro';
 import Appointment from './Appointment.astro';
 import ExternalCta from './ExternalCta.astro';
+import Icon from './Icon.astro';
+import Media from './Media.astro';
 import { safeUrl } from '../lib.mjs';
 const { site, branches } = Astro.props;
 ---
 <section id="sucursales" class="section locations-section"><div class="container">
-  <SectionLabel number="04" text="Sucursales" />
-  <div class="section-heading"><h2><Title text={site.copy.locationsTitle} /></h2><p>{site.copy.locationsIntro}</p></div>
-  {branches.length ? branches.map(branch => <article class="branch-row"><div><h3>{branch.name}</h3>{branch.address && <p>{branch.address}</p>}{branch.locationNote && <p>{branch.locationNote}</p>}{branch.schedule && <dl class="branch-schedule" aria-label={`Horario de ${branch.name}`}>{branch.schedule.map(row => <div><dt>{row.days}</dt><dd>{row.hours}</dd></div>)}</dl>}{branch.phone && <p>{branch.phone}</p>}</div><div class="actions">{branch.mapsUrl && <ExternalCta text="Ver ubicación en Maps" url={safeUrl(branch.mapsUrl)} />}{branch.googleBusinessUrl && <ExternalCta text="Ver ficha de Google" url={safeUrl(branch.googleBusinessUrl)} />}<Appointment site={site} number={branch.whatsapp || site.whatsapp} /></div></article>) : <div class="locations-empty"><div><span class="placeholder-tag">Información pendiente</span><h3>Ubicaciones por confirmar.</h3><p>Direcciones, horarios y teléfonos se incorporarán con la información del cliente.</p></div><div class="location-actions"><Appointment site={site} /><p class="placeholder-note">Enlaces de contacto, Maps y citas pendientes.</p></div></div>}
+  <div class="locations-heading">
+    <Media image={{...site.hero.image, alt: ''}} variant="locations-heading-media" />
+    <div class="locations-heading-copy"><SectionLabel number="04" text="Nuestras sucursales" />
+      <h2><Title text={site.copy.locationsTitle} /></h2><p>{site.copy.locationsIntro}</p>
+    </div>
+  </div>
+  <div class="branch-cards">{branches.map(branch => <article class="branch-card">
+    {branch.image && <Media image={branch.image} variant="branch-media" />}
+    <div class="branch-body">
+      <h3>{branch.name}</h3>
+      <div class="branch-location"><Icon name="pin" /><p>{branch.address || branch.locationNote}</p></div>
+      {site.phone && <a class="branch-phone" href={`tel:${site.phone.international}`}><Icon name="phone" /><span><small>Contacto VAGTech</small>{site.phone.display}</span></a>}
+      {branch.schedule && <div class="branch-hours"><Icon name="clock" /><dl class="branch-schedule" aria-label={`Horario de ${branch.name}`}>{branch.schedule.map(row => <div><dt>{row.days}</dt><dd>{row.hours}</dd></div>)}</dl></div>}
+      <div class="actions">{branch.mapsUrl && <ExternalCta text="Ver ubicación en Maps" url={safeUrl(branch.mapsUrl)} />}{branch.googleBusinessUrl && <ExternalCta text="Ver ficha de Google" url={safeUrl(branch.googleBusinessUrl)} />}</div>
+    </div>
+  </article>)}</div>
+  <div class="appointment-banner">
+    <Media image={{...site.hero.image, alt: ''}} variant="appointment-banner-media" />
+    <div><p class="micro">¿Prefieres consultar una cita?</p><h3>AGENDA <span>TU CITA</span></h3><p>Consulta disponibilidad por WhatsApp. VAGTech confirma tu cita.</p></div>
+    <Appointment site={site} />
+  </div>
 </div></section>

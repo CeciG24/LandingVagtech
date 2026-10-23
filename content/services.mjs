@@ -1,4 +1,15 @@
 import servicePhoto from '../src/assets/hero2.webp';
+import paintPhoto from '../src/assets/hojalateria.JPG';
+import finishPhoto from '../src/assets/cuidado.jpg';
+import interiorPhoto from '../src/assets/interior.webp';
+import equipmentPhoto from '../src/assets/accesorios.webp';
+// Presentation cards use supplied photographs of vehicles, not invented service imagery.
+export const serviceCategories = [
+  { name: 'Carrocería y acabados', icon: 'tool', image: paintPhoto },
+  { name: 'Cuidado y protección', icon: 'shield', image: finishPhoto },
+  { name: 'Interior y tecnología', icon: 'audio', image: interiorPhoto },
+  { name: 'Accesorios', icon: 'wheel', image: equipmentPhoto },
+];
 // Confirmed names from respuesta-formulario.zip. Groups are editorial organization.
 export const services = [
   {

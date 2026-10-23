@@ -3,15 +3,36 @@ import Title from './Title.astro';
 import SectionLabel from './SectionLabel.astro';
 import Media from './Media.astro';
 const { site, results } = Astro.props;
+const comparisons = results.filter(result => result.beforeImage && result.afterImage);
 ---
 <section id="resultados" class="section results-section textured-section"><div class="container">
-  <SectionLabel number="02" text="Resultados" />
-  <div class="section-heading"><h2><Title text={site.copy.resultsTitle} /></h2><p>{site.copy.resultsIntro}</p></div>
-  {results.length ? results.map(result => (
-    <article class:list={['result', { 'result-comparison': result.beforeImage && result.afterImage, 'comparison-portrait': result.orientation === 'portrait' }]}>
-      <h3>{result.title ?? 'Resultado VAGTech'}</h3>
-      {result.beforeImage && result.afterImage ? <div class="comparison"><div><span class="comparison-label">Antes</span><Media image={result.beforeImage} variant="comparison-media" /></div><div><span class="comparison-label">Después</span><Media image={result.afterImage} variant="comparison-media" /></div></div> : <Media image={result.image} />}
-      {result.description && <p>{result.description}</p>}
-    </article>
-  )) : <><div class="comparison placeholder-comparison"><div><span class="comparison-label">Antes</span><Media variant="result-media" caption="Fotografía original pendiente" /></div><div><span class="comparison-label">Después</span><Media variant="result-media" caption="Fotografía del resultado pendiente" /></div></div><div class="result-caption"><span class="micro">ESPACIO DE COMPARACIÓN</span><p>Material real pendiente. Estas áreas no representan trabajos realizados.</p></div></>}
+  <div class="results-intro"><SectionLabel number="02" text="Resultados" />
+    <div class="section-heading"><h2><Title text={site.copy.resultsTitle} /></h2><p>{site.copy.resultsIntro}</p></div>
+  </div>
+  <div class="results-gallery" data-results-gallery>
+    <div class="results-stage">
+      {comparisons.map(result => <article class="result result-comparison" id={`resultado-${result.id}`} data-result-panel>
+        <div class="comparison-view" style="--comparison-position: 50%">
+          <div class="comparison-photo comparison-after"><Media image={result.afterImage} variant="comparison-media" /></div>
+          <div class="comparison-photo comparison-before"><Media image={result.beforeImage} variant="comparison-media" /></div>
+          <span class="comparison-label comparison-label-before">Antes</span><span class="comparison-label comparison-label-after">Después</span>
+          <div class="comparison-control" hidden>
+            <span class="comparison-divider" aria-hidden="true"><span class="comparison-handle">‹ ›</span></span>
+            <input class="comparison-range" type="range" min="0" max="100" value="50" step="1" aria-label={`Comparar antes y después de ${result.title.replace(/^\d+ — /, '')}`} aria-valuetext="50% antes, 50% después" />
+          </div>
+        </div>
+        <h3>{result.title}</h3><p>{result.description}</p>
+        {result.comparisonNote && <p class="comparison-note">{result.comparisonNote}</p>}
+      </article>)}
+      {!comparisons.length && <p>Fotografías de resultados pendientes.</p>}
+    </div>
+    <div class="results-thumbnails" role="group" aria-label="Seleccionar trabajo para comparar" hidden>
+      {comparisons.map((result, index) => <button type="button" class="result-thumbnail" data-result-target={`resultado-${result.id}`} aria-controls={`resultado-${result.id}`} aria-pressed={index === 0 ? 'true' : 'false'} aria-label={`Ver comparación: ${result.title.replace(/^\d+ — /, '')}`}>
+        <span class="thumbnail-pair" aria-hidden="true"><Media image={{...result.beforeImage, alt: '', sizes: '(max-width: 700px) 25vw, 10vw'}} variant="thumbnail-media" /><Media image={{...result.afterImage, alt: '', sizes: '(max-width: 700px) 25vw, 10vw'}} variant="thumbnail-media" /><span class="thumbnail-before">Antes</span><span class="thumbnail-after">Después</span></span>
+        <span class="thumbnail-title">{result.title.replace(/^\d+ — /, '')}</span>
+      </button>)}
+    </div>
+    <p class="comparison-help" hidden>Desliza el control para comparar. También puedes usar las flechas del teclado.</p>
+    <p class="sr-only" data-result-status role="status" aria-live="polite"></p>
+  </div>
 </div></section>

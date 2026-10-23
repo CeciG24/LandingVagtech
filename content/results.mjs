@@ -13,7 +13,8 @@ export const results = [
   {
     id: 'porsche-911', title: '01 — Porsche 911', serviceId: 'personalizacion',
     description: 'Cambio de apariencia con acabado mate y detalles en naranja.',
-    beforeImage: { src: before1, alt: 'Antes: Porsche 911 negro con acabado brillante y rines plateados.', sizes },
+    comparisonNote: 'Las fotografías muestran el vehículo desde ángulos distintos.',
+    beforeImage: { src: before1, alt: 'Antes: Porsche 911 negro con acabado brillante y rines plateados.', sizes, mirrored: true },
     afterImage: { src: after1, alt: 'Después: Porsche 911 con acabado negro mate, franja lateral naranja y rines negros con detalles naranjas.', sizes },
   },
   {

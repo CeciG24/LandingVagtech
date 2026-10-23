@@ -3,9 +3,11 @@ import Title from './Title.astro';
 import SectionLabel from './SectionLabel.astro';
 import Media from './Media.astro';
 import WhatsApp from './WhatsApp.astro';
+import Icon from './Icon.astro';
+import Certifications from './Certifications.astro';
+import { serviceCategories } from '../../content/services.mjs';
 const { site, services } = Astro.props;
 const secondary = services.filter(service => !service.featured);
-const groups = [...new Set(secondary.map(service => service.group || 'Servicios'))];
 ---
 <section id="servicios" class="section container services-section">
   <SectionLabel number="01" text="Servicios" />
@@ -22,12 +24,7 @@ const groups = [...new Set(secondary.map(service => service.group || 'Servicios'
         </div>
       </article>
     ))}
-    <div class="secondary-services">
-      {groups.map((group, i) => (
-        <article class="service-row service-group"><span class="micro">{String(i + 2).padStart(2, '0')}</span><h3>{group}</h3><ul>{secondary.filter(service => (service.group || 'Servicios') === group).map(service => <li><a href="#cotizacion" data-service={service.id}>{service.name}<span aria-hidden="true">↗</span></a></li>)}</ul></article>
-      ))}
-      {services.every(s => s.featured) && <div class="catalog-placeholder"><span class="micro">CATÁLOGO POR CONFIRMAR</span><h3>Otros servicios.<br />Mismo espacio,<br />menor jerarquía.</h3><p>Los servicios secundarios aparecerán aquí cuando VAGTech confirme la lista. No se han asumido servicios adicionales.</p><span class="placeholder-tag">Placeholder de contenido</span></div>}
-    </div>
   </div>
-  {site.assurance && <div class="service-assurance"><div><h3>{site.assurance.warranty}</h3><p>{site.assurance.note}</p></div><div><h3>{site.assurance.certificationsTitle}</h3><ul class="brand-list">{site.assurance.brands.map(brand => <li>{brand}</li>)}</ul></div></div>}
+  <div class="service-cards">{serviceCategories.map(category => <article class="service-card"><Media image={{ src: category.image, alt: '', sizes: '(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 25vw' }} variant="category-media" /><div class="category-body"><span class="category-icon"><Icon name={category.icon} /></span><h3>{category.name}</h3><ul>{secondary.filter(service => service.group === category.name).map(service => <li><a href="#cotizacion" data-service={service.id}>{service.name}<span aria-hidden="true">→</span></a></li>)}</ul></div></article>)}</div>
+  {site.assurance && <div class="service-assurance"><div><h3>{site.assurance.warranty}</h3><p>{site.assurance.note}</p></div><Certifications title={site.assurance.certificationsTitle} /></div>}
 </section>

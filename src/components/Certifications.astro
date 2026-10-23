@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import { certifications } from '../../content/certifications.mjs';
+const { title } = Astro.props;
+---
+<section class="certifications-carousel" aria-labelledby="certifications-title" aria-roledescription="carrusel" data-certifications-carousel>
+  <div class="certifications-heading">
+    <h3 id="certifications-title">{title}</h3>
+    <div class="certifications-controls" hidden>
+      <button type="button" data-carousel-previous aria-label="Ver logos anteriores" aria-controls="certifications-track" disabled><span aria-hidden="true">←</span></button>
+      <button type="button" data-carousel-next aria-label="Ver más logos" aria-controls="certifications-track"><span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+  <ul id="certifications-track" class="certifications-track" tabindex="0" aria-label="Logos de certificaciones de marca. Desliza o usa las flechas del teclado.">
+    {certifications.map(brand => <li class:list={['certification-logo', { 'is-padded': brand.padded }]}><Image src={brand.image} alt={brand.name} width={280} widths={[140, 280]} sizes="140px" format="webp" quality={90} loading="lazy" decoding="async" /></li>)}
+  </ul>
+</section>

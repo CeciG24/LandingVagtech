@@ -4,13 +4,13 @@ const { image, variant = '', caption = 'Fotografía VAGTech por incorporar' } = 
 const maxWidth = image && typeof image.src === 'object' ? Math.min(image.src.width, 1920) : undefined;
 const widths = maxWidth ? [...new Set([480, 640, 960, 1440, maxWidth].filter(width => width <= maxWidth))].sort((a, b) => a - b) : [];
 ---
-<figure class:list={['media', variant]}>
+<figure class:list={['media', variant, { 'media-mirrored': image?.mirrored }]}>
   {image ? (
     typeof image.src === 'object' ? <Image src={image.src} width={maxWidth} alt={image.alt} widths={widths} sizes={image.sizes || (variant === 'hero-media' ? '100vw' : '(max-width: 700px) 100vw, 60vw')} format="webp" quality={78} loading={variant === 'hero-media' ? 'eager' : 'lazy'} fetchpriority={variant === 'hero-media' ? 'high' : undefined} decoding="async" /> : <img src={image.src} srcset={image.srcset} sizes={image.sizes} width={image.width} height={image.height} alt={image.alt} loading={variant === 'hero-media' ? 'eager' : 'lazy'} fetchpriority={variant === 'hero-media' ? 'high' : undefined} decoding="async" />
   ) : (
     <div class="media-placeholder" aria-hidden="true"></div>
   )}
   {!image && <figcaption><span class="placeholder-tag">Placeholder visual</span>{caption}</figcaption>}
-  {image?.provisional && <figcaption class="concept-caption"><span class="placeholder-tag">Referencia visual</span>{image.caption}</figcaption>}
+  {image?.provisional && <figcaption class="concept-caption"><span class="placeholder-tag">{image.placeholderLabel || 'Referencia visual'}</span>{image.caption}</figcaption>}
   {image?.caption && !image.provisional && <figcaption>{image.caption}</figcaption>}
 </figure>

@@ -1,6 +1,7 @@
 ---
 import Media from './Media.astro';
 import WhatsApp from './WhatsApp.astro';
+import Icon from './Icon.astro';
 const { site } = Astro.props;
 ---
 <section id="inicio" class="hero container">
@@ -8,11 +9,12 @@ const { site } = Astro.props;
   <div class="hero-composition">
     <Media image={site.hero.image} variant="hero-media" caption="Vehículo personalizado · imagen aprobada pendiente" />
     <div class="hero-copy">
-      <h1>{site.hero.lines.map((line, i) => <span class:list={{ 'hero-lime': i === 1 }}>{line}</span>)}</h1>
+      <h1>{site.hero.lines.map((line, i) => <span class:list={['hero-title-line', i === site.hero.lines.length - 1 ? 'hero-lime' : 'hero-silver']}>{line}</span>)}</h1>
       <div class="hero-support">
         {site.provisional && <p class="placeholder-note">Texto provisional · pendiente de aprobación</p>}
         <p>{site.hero.description}</p>
-        <div class="actions"><a class="button button-primary" href="#servicios">Conocer servicios <span aria-hidden="true">↓</span></a><a class="button button-secondary" href="#cotizacion">Cotizar proyecto <span aria-hidden="true">↗</span></a><WhatsApp site={site} /></div>
+        <div class="actions"><a class="button button-primary" href="#cotizacion">Cotizar servicio <span aria-hidden="true">→</span></a><WhatsApp site={site} /></div>
+        <div class="hero-highlights"><span><Icon name="wheel" />Personalización<br />automotriz</span><span><Icon name="finish" />Carrocería<br />y acabados</span><span><Icon name="shield" />Garantía<br />de 90 días</span></div>
       </div>
     </div>
     <span class="hero-side" aria-hidden="true">PERSONALIZACIÓN AUTOMOTRIZ</span>

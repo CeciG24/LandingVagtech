@@ -62,3 +62,11 @@ Node recomendado: 22.19+ o 24 LTS. Una dependencia de build transitiva (`undici`
 Build estático correcto con Node 24. Cinco pruebas sobre el HTML de producción comprueban secciones/anchors/H1, ausencia de runtime servidor e hidratación, tamaño acotado del script, metadata provisional sin destinos inventados, preparación/encoding del mensaje, fuentes locales y logo optimizado. La vista de producción se sirve con `astro preview`.
 
 La herramienta de control de navegador no pudo inicializarse en esta iteración (error al preparar sus archivos de sesión). No se afirma una revisión visual responsive ni una medición de Core Web Vitals posteriores a la migración; quedan pendientes de inspección en navegador. Los breakpoints y lógica de interacción previos se conservaron.
+
+## Ajuste de títulos a la presentación (23 de octubre de 2026)
+
+Por solicitud del usuario, Russo One sustituye Saira Semi Condensed en los encabezados. Sus formas anchas, pesadas y de contornos cuadrados se aproximan más a los títulos de los mockups. Es una aproximación visual, no una identificación exacta de la fuente de las imágenes.
+
+Los tokens de títulos son ahora `--font-display: 'Russo One', sans-serif`, `--weight-display: 400`, `--weight-heading: 400`, `--tracking-display: -.02em` y `--tracking-heading: -.015em`. El peso 400 es el único estilo de la familia y ya tiene trazos gruesos; se desactiva la síntesis para evitar una negrita artificial. Se ajusta la escala responsive para acomodar el mayor ancho de las letras. Saira continúa en cuerpo y UI; el logo conserva su arte original.
+
+La fuente se empaqueta localmente con Fontsource, subset Latin, WOFF2, `font-display: swap` y preload del archivo de títulos. No se añaden solicitudes a Google Fonts en tiempo de ejecución ni JavaScript. Referencia de distribución y licencia: https://fontsource.org/fonts/russo-one/about

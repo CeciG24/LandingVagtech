@@ -2,6 +2,8 @@
 import Title from './Title.astro';
 import SectionLabel from './SectionLabel.astro';
 import Appointment from './Appointment.astro';
+import Media from './Media.astro';
+import Icon from './Icon.astro';
 import { whatsappUrl, safeUrl } from '../lib.mjs';
 const { site, services } = Astro.props;
 const ready = Boolean(whatsappUrl(site.whatsapp));
@@ -10,21 +12,24 @@ const privacy = safeUrl(site.privacyUrl);
 <section id="cotizacion" class="section quote-section textured-section"><div class="container quote-layout">
   <div class="quote-intro">
     <SectionLabel number="03" text="Cotización" /><h2><Title text={site.copy.quoteTitle} /></h2><p>{site.copy.quoteIntro}</p>
+    <Media image={site.quote.image} variant="quote-media" />
     <div class="quote-line" aria-hidden="true"></div>
     <p class="form-explanation">{ready ? 'Prepara tu solicitud y revísala antes de continuar a WhatsApp. El envío se completa en esa aplicación.' : 'Modo provisional: puedes preparar tu solicitud. No se enviará hasta confirmar el WhatsApp de VAGTech.'}</p>
     <div class="actions"><Appointment site={site} /></div>
     {!site.appointmentUrl && <p class="placeholder-note">Consulta disponibilidad por WhatsApp. La cita se confirma con VAGTech.</p>}
   </div>
-  <form id="quote-form" class="quote-form">
+  <form id="quote-form" class="quote-form" aria-describedby="quote-form-intro quote-form-privacy">
+    <h3 class="quote-form-title"><Title text={'SOLICITA TU\nCOTIZACIÓN'} /></h3>
+    <p id="quote-form-intro" class="quote-form-intro">Completa el formulario para preparar tu solicitud de cotización. Podrás revisarla antes de enviarla por WhatsApp.</p>
     <div class="form-grid">
-      <div class="field"><label for="name">Nombre <span aria-hidden="true">*</span></label><input id="name" name="name" autocomplete="name" maxlength="100" required placeholder="Tu nombre" /></div>
-      <div class="field"><label for="phone">Teléfono / WhatsApp <span aria-hidden="true">*</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="8" maxlength="25" pattern="[+0-9\(\) .\-]{8,25}" required placeholder="Tu número de contacto" /></div>
-      <div class="field"><label for="vehicle">Vehículo <span class="optional">Opcional</span></label><input id="vehicle" name="vehicle" maxlength="120" placeholder="Marca y modelo" /></div>
-      <div class="field"><label for="service">Servicio de interés <span aria-hidden="true">*</span></label><select id="service" name="service" required><option value="">Selecciona un servicio</option>{services.map(service => <option value={service.id}>{service.name}{service.pendingConfirmation ? ' (por confirmar)' : ''}</option>)}</select></div>
-      <div class="field field-wide"><label for="description">¿Qué tienes en mente? <span class="optional">Opcional</span></label><textarea id="description" name="description" maxlength="1500" rows="4" placeholder="Cuéntanos sobre tu proyecto"></textarea></div>
+      <div class="field field-with-icon"><label class="sr-only" for="name">Nombre completo (obligatorio)</label><Icon name="user" /><input id="name" name="name" autocomplete="name" maxlength="100" required placeholder="Nombre completo *" /></div>
+      <div class="field field-with-icon"><label class="sr-only" for="phone">Teléfono o WhatsApp (obligatorio)</label><Icon name="phone" /><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" minlength="8" maxlength="25" pattern="[+0-9\(\) .\-]{8,25}" required placeholder="Teléfono / WhatsApp *" /></div>
+      <div class="field field-with-icon"><label class="sr-only" for="vehicle">Marca y modelo del vehículo (opcional)</label><Icon name="car" /><input id="vehicle" name="vehicle" maxlength="120" placeholder="Modelo de tu auto (opcional)" /></div>
+      <div class="field field-with-icon"><label class="sr-only" for="service">Servicio de interés (obligatorio)</label><Icon name="tool" /><select id="service" name="service" required><option value="">Servicio de interés *</option>{services.map(service => <option value={service.id}>{service.name}{service.pendingConfirmation ? ' (por confirmar)' : ''}</option>)}</select></div>
+      <div class="field field-wide field-with-icon"><label class="sr-only" for="description">Detalles del vehículo y del servicio (opcional)</label><Icon name="document" /><textarea id="description" name="description" maxlength="1500" rows="4" placeholder="Cuéntanos más detalles sobre tu vehículo y lo que necesitas (opcional)…"></textarea></div>
     </div>
-    <p class="privacy-note">* Campos obligatorios. Los datos se usan para preparar este mensaje; no se guardan en el sitio. {privacy ? <><a href={privacy}>Aviso de privacidad</a>.</> : 'Aviso de privacidad pendiente de VAGTech.'}</p>
-    <button type="submit" class="button button-primary" id="prepare-quote" disabled>Preparar solicitud <span aria-hidden="true">↗</span></button>
+    <button type="submit" class="button button-primary quote-submit" id="prepare-quote" disabled><Icon name="whatsapp" /><span>Preparar solicitud<br />por WhatsApp</span><span class="quote-submit-arrow" aria-hidden="true">→</span></button>
+    <p id="quote-form-privacy" class="privacy-note"><Icon name="lock" /><span>* Campos obligatorios. Tus datos se usan para preparar el mensaje y no se guardan en el sitio. {privacy && <><a href={privacy}>Aviso de privacidad</a>.</>}</span></p>
     <noscript><p>Activa JavaScript para preparar el mensaje de cotización.</p></noscript>
     <div id="quote-preview" class="quote-preview" hidden><p class="micro">REVISA TU SOLICITUD</p><pre id="quote-message"></pre><p id="quote-status" role="status" aria-live="polite"></p><a id="quote-send" class="button button-primary" target="_blank" rel="noopener noreferrer" hidden>Continuar a WhatsApp <span aria-hidden="true">↗</span></a></div>
   </form>
