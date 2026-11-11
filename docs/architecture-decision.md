@@ -16,7 +16,7 @@ Referencias oficiales: [prerenderizado](https://docs.astro.build/en/guides/on-de
 
 ## SEO y rendimiento
 
-Todo el contenido se recibe en el HTML inicial. Se conservan H1 único, jerarquía, anchors, title, descripción y OpenGraph. Canonical, OG image y JSON-LD solo se emiten con datos confirmados. El preview conserva noindex; sitemap vacío y robots bloqueado hasta confirmar dominio e indexación. No hay nuevas páginas de negocio.
+Todo el contenido se recibe en el HTML inicial. Se conservan H1 único, jerarquía, anchors, title, descripción y OpenGraph. La URL canónica de producción es `https://landing-vagtech.vercel.app/`. Producción permite el rastreo y lista esa URL en el sitemap; los despliegues de vista previa de Vercel mantienen `noindex` y un sitemap vacío. No hay nuevas páginas de negocio.
 
 El logo original suministrado pesa aproximadamente 4.8 MB. Se conserva intacto y se importa una copia en `src/assets/`; Astro produce variantes WebP de 48/96 px para header/footer con dimensiones explícitas. El original en `public/` no se descarga al cargar la página. Las fotografías siguen pendientes: `Media.astro` admite dimensiones, srcset y sizes para assets optimizados futuros, eager/high priority en hero y lazy loading en el resto.
 

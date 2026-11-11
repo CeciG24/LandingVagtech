@@ -53,6 +53,6 @@ La alineación visual con la propuesta se concentra en `src/styles/proposal.css`
 
 El formulario prepara un mensaje local y permite revisarlo. WhatsApp se actualizó por indicación de la usuaria a 2217314930: una segunda acción abre ese destino para completar el envío allí. El contacto de llamadas del formulario continúa en 2221188950. No se guardan datos en el sitio. El CTA de citas consulta por WhatsApp mientras no haya una URL validada del sistema externo; no reserva ni simula disponibilidad.
 
-En `content/seo.mjs`, title/description y JSON-LD Organization reflejan los datos reales recibidos. No se inventa un LocalBusiness por sucursal sin domicilio completo. Confirmar dominio HTTPS e imagen OpenGraph antes de producción. `indexable` permanece desactivado mientras no haya dominio final: noindex, robots bloqueado y sitemap sin URLs inventadas.
+En `content/seo.mjs` se configura la URL canónica de producción, `https://landing-vagtech.vercel.app/`. El HTML permite la indexación y `robots.txt` apunta al sitemap con esa misma URL. Los despliegues de Vercel con `VERCEL_ENV=preview` conservan `noindex` y un sitemap vacío. El JSON-LD usa los datos confirmados de la organización.
 
 `site.provisional` está desactivado y los servicios confirmados ya no llevan etiquetas provisionales. Falta recibir el aviso de privacidad, precisar algunos nombres de marcas y completar las direcciones postales; horarios y enlaces directos a Maps ya se incorporaron. No se han añadido analytics, cuentas ni integraciones de agenda no confirmadas.

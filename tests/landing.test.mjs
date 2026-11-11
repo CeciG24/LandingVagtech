@@ -2,8 +2,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir, stat } from 'node:fs/promises';
 import { quoteMessage, whatsappUrl, safeUrl, escapeHtml } from '../src/lib.mjs';
-import { GET as robots } from '../src/pages/robots.txt.js';
-import { GET as sitemap } from '../src/pages/sitemap.xml.js';
 const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
 
 test('production HTML contains every section and resolves all anchors before JavaScript', () => {
@@ -26,7 +24,7 @@ test('static output has one HTML page and no server runtime or hydration', async
   const size = inline.length ? Buffer.byteLength(inline[0][1]) : (await stat(new URL(`../dist/${scripts[0]}`, import.meta.url))).size;
   assert.ok(size < 8000, `Client bundle must remain small (${size} bytes)`);
 });
-test('client content activates confirmed contacts while domain remains pending', async () => {
+test('client content uses confirmed contacts and locations', () => {
   const whatsappLinks = [...html.matchAll(/href="(https:\/\/wa.me\/[^\"]+)"/g)].map(match => match[1].replaceAll('&amp;', '&'));
   assert.ok(whatsappLinks.length > 0);
   assert.ok(whatsappLinks.every(link => new URL(link).pathname === '/522217314930'));
@@ -45,17 +43,29 @@ test('client content activates confirmed contacts while domain remains pending',
   assert.equal((html.match(/class="branch-schedule"/g) || []).length, 2);
   assert.equal((html.match(/<dd>9 a.m. – 7 p.m.<\/dd>/g) || []).length, 2);
   assert.equal((html.match(/<dd>Cerrado<\/dd>/g) || []).length, 2);
-  assert.ok(!html.includes('rel="canonical"'));
   const jsonld = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
   assert.equal(jsonld['@type'], 'Organization');
   assert.equal(jsonld.telephone, '+522221188950');
   assert.ok(!jsonld.address);
   assert.ok(!jsonld.aggregateRating);
-  assert.ok(html.includes('noindex,nofollow'));
   assert.ok(html.includes('property="og:title"'));
   assert.ok(html.includes('name="description"'));
-  assert.equal(await robots().text(), 'User-agent: *\nDisallow: /\n');
-  assert.ok(!(await sitemap().text()).includes('<loc>'));
+});
+test('built SEO files agree on the canonical URL and deployment indexability', async () => {
+  const url = 'https://landing-vagtech.vercel.app/';
+  const robots = await readFile(new URL('../dist/robots.txt', import.meta.url), 'utf8');
+  const sitemap = await readFile(new URL('../dist/sitemap.xml', import.meta.url), 'utf8');
+  assert.ok(html.includes(`rel="canonical" href="${url}"`));
+  assert.ok(html.includes(`property="og:url" content="${url}"`));
+  if (process.env.VERCEL_ENV === 'preview') {
+    assert.ok(html.includes('name="robots" content="noindex,nofollow"'));
+    assert.equal(robots, 'User-agent: *\nDisallow: /\n');
+    assert.ok(!sitemap.includes('<loc>'));
+  } else {
+    assert.ok(html.includes('name="robots" content="index,follow"'));
+    assert.equal(robots, `User-agent: *\nAllow: /\nSitemap: ${url}sitemap.xml\n`);
+    assert.ok(sitemap.includes(`<loc>${url}</loc>`));
+  }
 });
 test('quote is encoded safely and omits absent optional data', () => {
   const message = quoteMessage({ name: ' Prueba & QA ', phone: '+00 00000000', vehicle: '', description: '' }, 'Personalización automotriz');
